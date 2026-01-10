@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fracturify — Elegante Typografie</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a0b;
+            --bg-card: #111113;
+            --bg-hover: #1a1a1d;
+            --text-primary: #e8e6e3;
+            --text-muted: #6b6b6b;
+            --accent: #40E0D0;
+            --accent-glow: rgba(64, 224, 208, 0.15);
+            --accent-dim: rgba(64, 224, 208, 0.4);
+            --border: #1f1f23;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: 2.5rem;
+            font-weight: 400;
+            letter-spacing: 0.15em;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tagline {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-weight: 300;
+            letter-spacing: 0.05em;
+        }
+
+        /* Mode Selection */
+        .mode-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .mode-option {
+            position: relative;
+        }
+
+        .mode-option input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .mode-label {
+            display: block;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.9rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .mode-label:hover {
+            background: var(--bg-hover);
+            border-color: var(--accent-dim);
+        }
+
+        .mode-option input:checked + .mode-label {
+            border-color: var(--accent);
+            background: rgba(64, 224, 208, 0.08);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        .mode-name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .mode-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Random Slider */
+        .slider-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .slider-section.visible {
+            display: block;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .slider-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .slider-value {
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--border);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent);
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        /* Input Section */
+        .input-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            resize: vertical;
+            outline: none;
+        }
+
+        textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* Buttons */
+        .button-row {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        button {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg-dark);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 30px var(--accent-glow);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Output Section */
+        .output-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            min-height: 100px;
+            position: relative;
+        }
+
+        .output-section.has-content {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        #output {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+
+        #output:empty::before {
+            content: "Dein verschönerter Text erscheint hier...";
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* Clickable words for "Selbst wählen" mode */
+        #output .word {
+            cursor: pointer;
+            padding: 0.1em 0.15em;
+            border-radius: 3px;
+            transition: background 0.15s;
+        }
+
+        #output .word:hover {
+            background: var(--bg-hover);
+        }
+
+        #output .word.fraktur {
+            color: var(--accent);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+            flex: none;
+        }
+
+        .output-section.has-content .copy-btn {
+            opacity: 1;
+        }
+
+        .copy-btn.copied {
+            background: #2a9d8f;
+        }
+
+        .hint {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 2rem;
+            font-weight: 300;
+        }
+
+        .hint.select-hint {
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            color: var(--accent-dim);
+        }
+
+        footer {
+            margin-top: auto;
+            padding-top: 3rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>FRACTURIFY</h1>
+            <p class="tagline">Elegante Akzente für deine Worte</p>
+        </header>
+
+        <!-- Mode Selection -->
+        <div class="mode-section">
+            <div class="mode-option">
+                <input type="radio" name="mode" id="mode-all" value="all">
+                <label class="mode-label" for="mode-all">
+                    <div class="mode-name">𝔄𝔩𝔩𝔢𝔰</div>
+                    <div class="mode-desc">Ganzer Text wird Fraktur</div>
+                </label>
+            </div>
+            <div class="mode-option">
+                <input type="radio" name="mode" id="mode-highlights" value="highlights" checked>
+                <label class="mode-label" for="mode-highlights">
+                    <div class="mode-name">Highlights</div>
+                    <div class="mode-desc">Emotionale Wörter</div>
+                </label>
+            </div>
+            <div class="mode-option">
+                <input type="radio" name="mode" id="mode-random" value="random">
+                <label class="mode-label" for="mode-random">
+                    <div class="mode-name">Random</div>
+                    <div class="mode-desc">Zufällige Akzente</div>
+                </label>
+            </div>
+            <div class="mode-option">
+                <input type="radio" name="mode" id="mode-select" value="select">
+                <label class="mode-label" for="mode-select">
+                    <div class="mode-name">Wählen</div>
+                    <div class="mode-desc">Klick auf Wörter</div>
+                </label>
+            </div>
+        </div>
+
+        <!-- Random Slider (hidden by default) -->
+        <div class="slider-section" id="slider-section">
+            <div class="slider-header">
+                <span class="slider-label">Wie viele Wörter?</span>
+                <span class="slider-value"><span id="slider-percent">30</span>%</span>
+            </div>
+            <input type="range" id="random-slider" min="10" max="70" value="30">
+        </div>
+
+        <div class="input-section">
+            <textarea id="input" placeholder="Schreib deinen Text hier..."></textarea>
+        </div>
+
+        <div class="button-row">
+            <button class="btn-primary" onclick="fracturify()">✨ Verschönern</button>
+            <button class="btn-secondary" onclick="clearAll()">Löschen</button>
+        </div>
+
+        <p class="hint select-hint" id="select-hint" style="display: none;">
+            👆 Klick auf Wörter um sie zu verwandeln
+        </p>
+
+        <div class="output-section" id="output-container">
+            <button class="btn-secondary copy-btn" onclick="copyResult()">Kopieren</button>
+            <div id="output"></div>
+        </div>
+
+        <p class="hint">Perfekt für Instagram, Discord, TikTok & mehr</p>
+    </div>
+
+    <footer>
+        <p>Made with 💙 — <a href="https://alita500nm.github.io">alita500nm</a></p>
+    </footer>
+
+    <script>
+        // Fraktur Unicode mappings
+        const frakturMap = {
+            'A': '𝔄', 'B': '𝔅', 'C': 'ℭ', 'D': '𝔇', 'E': '𝔈', 'F': '𝔉', 'G': '𝔊',
+            'H': 'ℌ', 'I': 'ℑ', 'J': '𝔍', 'K': '𝔎', 'L': '𝔏', 'M': '𝔐', 'N': '𝔑',
+            'O': '𝔒', 'P': '𝔓', 'Q': '𝔔', 'R': 'ℜ', 'S': '𝔖', 'T': '𝔗', 'U': '𝔘',
+            'V': '𝔙', 'W': '𝔚', 'X': '𝔛', 'Y': '𝔜', 'Z': 'ℨ',
+            'a': '𝔞', 'b': '𝔟', 'c': '𝔠', 'd': '𝔡', 'e': '𝔢', 'f': '𝔣', 'g': '𝔤',
+            'h': '𝔥', 'i': '𝔦', 'j': '𝔧', 'k': '𝔨', 'l': '𝔩', 'm': '𝔪', 'n': '𝔫',
+            'o': '𝔬', 'p': '𝔭', 'q': '𝔮', 'r': '𝔯', 's': '𝔰', 't': '𝔱', 'u': '𝔲',
+            'v': '𝔳', 'w': '𝔴', 'x': '𝔵', 'y': '𝔶', 'z': '𝔷'
+        };
+
+        // Reverse mapping for toggle functionality
+        const reverseFrakturMap = {};
+        for (const [latin, fraktur] of Object.entries(frakturMap)) {
+            reverseFrakturMap[fraktur] = latin;
+        }
+
+        // Emotionale Kernwörter
+        const emotionalWords = [
+            'liebe', 'seele', 'herz', 'kraft', 'traum', 'träume', 'hoffnung', 'glaube',
+            'mut', 'stolz', 'ehre', 'treue', 'freiheit', 'schicksal', 'ewigkeit',
+            'schönheit', 'wahrheit', 'weisheit', 'stärke', 'macht', 'leidenschaft',
+            'sehnsucht', 'heimat', 'dunkelheit', 'licht', 'schatten', 'feuer', 'flamme',
+            'sturm', 'donner', 'blitz', 'tod', 'leben', 'schmerz', 'freude', 'glück',
+            'trauer', 'wut', 'zorn', 'rache', 'vergebung', 'erlösung', 'verdammnis',
+            'engel', 'dämon', 'geist', 'seelen', 'blut', 'knochen', 'asche', 'staub',
+            'rost', 'gold', 'silber', 'schwarz', 'weiß', 'rot', 'nacht', 'tag',
+            'mond', 'sonne', 'stern', 'sterne', 'himmel', 'hölle', 'erde', 'meer',
+            'ozean', 'berg', 'tal', 'wald', 'rose', 'dorn', 'dornen', 'klinge',
+            'schwert', 'schild', 'krone', 'thron', 'könig', 'königin', 'krieger',
+            'held', 'heldin', 'ritter', 'drache', 'wolf', 'löwe', 'adler', 'rabe',
+            'phönix', 'einsamkeit', 'stille', 'echo', 'ewige', 'ewig', 'unendlich',
+            'verschränkung', 'symbiose', 'transformation',
+            'love', 'soul', 'heart', 'power', 'dream', 'dreams', 'hope', 'faith',
+            'courage', 'pride', 'honor', 'loyalty', 'freedom', 'destiny', 'eternity',
+            'beauty', 'truth', 'wisdom', 'strength', 'passion', 'darkness', 'light',
+            'shadow', 'fire', 'flame', 'storm', 'thunder', 'death', 'life', 'pain',
+            'joy', 'sorrow', 'rage', 'wrath', 'revenge', 'redemption', 'damnation',
+            'angel', 'demon', 'spirit', 'blood', 'bone', 'bones', 'ash', 'ashes',
+            'dust', 'rust', 'gold', 'silver', 'black', 'white', 'red', 'night',
+            'day', 'moon', 'sun', 'star', 'stars', 'heaven', 'hell', 'earth',
+            'sea', 'ocean', 'mountain', 'forest', 'rose', 'thorn', 'thorns',
+            'blade', 'sword', 'shield', 'crown', 'throne', 'king', 'queen',
+            'warrior', 'hero', 'knight', 'dragon', 'wolf', 'lion', 'eagle',
+            'raven', 'phoenix', 'solitude', 'silence', 'echo', 'eternal', 'infinite',
+            'dark', 'sacred', 'ancient', 'forsaken', 'broken', 'fallen', 'rising'
+        ];
+
+        // Helper functions
+        function toFraktur(text) {
+            return text.split('').map(char => frakturMap[char] || char).join('');
+        }
+
+        function fromFraktur(text) {
+            return text.split('').map(char => reverseFrakturMap[char] || char).join('');
+        }
+
+        function isFraktur(text) {
+            return text.split('').some(char => reverseFrakturMap[char]);
+        }
+
+        function getSelectedMode() {
+            return document.querySelector('input[name="mode"]:checked').value;
+        }
+
+        // Show/hide slider based on mode
+        document.querySelectorAll('input[name="mode"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                const slider = document.getElementById('slider-section');
+                const selectHint = document.getElementById('select-hint');
+                slider.classList.toggle('visible', radio.value === 'random');
+                selectHint.style.display = radio.value === 'select' ? 'block' : 'none';
+            });
+        });
+
+        // Update slider value display
+        document.getElementById('random-slider').addEventListener('input', (e) => {
+            document.getElementById('slider-percent').textContent = e.target.value;
+        });
+
+        // Main fracturify function
+        function fracturify() {
+            const input = document.getElementById('input').value;
+            if (!input.trim()) return;
+
+            const mode = getSelectedMode();
+            const output = document.getElementById('output');
+            const container = document.getElementById('output-container');
+
+            let result;
+
+            switch (mode) {
+                case 'all':
+                    result = toFraktur(input);
+                    output.textContent = result;
+                    break;
+
+                case 'highlights':
+                    const pattern = new RegExp(
+                        '\\b(' + emotionalWords.join('|') + ')\\b', 'gi'
+                    );
+                    result = input.replace(pattern, match => toFraktur(match));
+                    output.textContent = result;
+                    break;
+
+                case 'random':
+                    const percent = parseInt(document.getElementById('random-slider').value) / 100;
+                    result = input.replace(/\b\w+\b/g, (word) => {
+                        return Math.random() < percent ? toFraktur(word) : word;
+                    });
+                    output.textContent = result;
+                    break;
+
+                case 'select':
+                    // Create clickable words
+                    output.innerHTML = '';
+                    const words = input.split(/(\s+)/); // Keep whitespace
+                    words.forEach((segment, index) => {
+                        if (/^\s+$/.test(segment)) {
+                            // Whitespace - preserve it
+                            output.appendChild(document.createTextNode(segment));
+                        } else if (segment) {
+                            // Word - make it clickable
+                            const span = document.createElement('span');
+                            span.className = 'word';
+                            span.textContent = segment;
+                            span.dataset.original = segment;
+                            span.addEventListener('click', toggleWord);
+                            output.appendChild(span);
+                        }
+                    });
+                    break;
+            }
+
+            container.classList.add('has-content');
+        }
+
+        // Toggle word between normal and Fraktur
+        function toggleWord(e) {
+            const span = e.target;
+            const current = span.textContent;
+            
+            if (isFraktur(current)) {
+                span.textContent = fromFraktur(current);
+                span.classList.remove('fraktur');
+            } else {
+                span.textContent = toFraktur(current);
+                span.classList.add('fraktur');
+            }
+        }
+
+        function copyResult() {
+            const output = document.getElementById('output');
+            const mode = getSelectedMode();
+            
+            let text;
+            if (mode === 'select') {
+                // Get text from spans
+                text = Array.from(output.childNodes)
+                    .map(node => node.textContent)
+                    .join('');
+            } else {
+                text = output.textContent;
+            }
+            
+            if (!text) return;
+
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                btn.textContent = '✓ Kopiert!';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = 'Kopieren';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        function clearAll() {
+            document.getElementById('input').value = '';
+            document.getElementById('output').textContent = '';
+            document.getElementById('output').innerHTML = '';
+            document.getElementById('output-container').classList.remove('has-content');
+        }
+
+        // Ctrl+Enter shortcut
+        document.getElementById('input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                e.preventDefault();
+                fracturify();
+            }
+        });
+    </script>
+</body>
+</html>
