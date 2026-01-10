@@ -43,7 +43,7 @@
 
         header {
             text-align: center;
-            margin-bottom: 2.5rem;
+            margin-bottom: 2rem;
         }
 
         h1 {
@@ -63,6 +63,50 @@
             font-size: 0.95rem;
             font-weight: 300;
             letter-spacing: 0.05em;
+        }
+
+        /* Font Selection */
+        .font-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .font-section label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .font-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-dark);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .font-select:hover,
+        .font-select:focus {
+            border-color: var(--accent);
+        }
+
+        .font-preview {
+            margin-top: 0.75rem;
+            padding: 0.5rem;
+            text-align: center;
+            font-size: 1.1rem;
+            color: var(--accent);
+            min-height: 1.8rem;
         }
 
         /* Mode Selection */
@@ -260,7 +304,7 @@
             font-style: italic;
         }
 
-        /* Clickable words for "Selbst wählen" mode */
+        /* Clickable words for "Wählen" mode */
         #output .word {
             cursor: pointer;
             padding: 0.1em 0.15em;
@@ -272,7 +316,7 @@
             background: var(--bg-hover);
         }
 
-        #output .word.fraktur {
+        #output .word.styled {
             color: var(--accent);
         }
 
@@ -330,13 +374,33 @@
             <p class="tagline">Elegante Akzente für deine Worte</p>
         </header>
 
+        <!-- Font Selection -->
+        <div class="font-section">
+            <label for="font-select">Schriftart wählen</label>
+            <select class="font-select" id="font-select">
+                <option value="fraktur">𝔉𝔯𝔞𝔨𝔱𝔲𝔯 — Klassisch elegant</option>
+                <option value="bold">𝐁𝐨𝐥𝐝 — Fett & kräftig</option>
+                <option value="italic">𝑰𝒕𝒂𝒍𝒊𝒄 — Kursiv & fließend</option>
+                <option value="boldItalic">𝑩𝒐𝒍𝒅 𝑰𝒕𝒂𝒍𝒊𝒄 — Fett & kursiv</option>
+                <option value="script">𝒮𝒸𝓇𝒾𝓅𝓉 — Verschnörkelt</option>
+                <option value="boldScript">𝓑𝓸𝓵𝓭 𝓢𝓬𝓻𝓲𝓹𝓽 — Fett verschnörkelt</option>
+                <option value="doubleStruck">𝔻𝕠𝕦𝕓𝕝𝕖 — Doppelt gestrichen</option>
+                <option value="monospace">𝙼𝚘𝚗𝚘𝚜𝚙𝚊𝚌𝚎 — Schreibmaschine</option>
+                <option value="circled">Ⓒⓘⓡⓒⓛⓔⓓ — Eingekreist</option>
+                <option value="squared">🄲🅄🄱🄴🅂 — Quadratisch</option>
+                <option value="squaredNeg">🅲🆄🅱🅴🆂 — Invertiert</option>
+                <option value="smallCaps">sᴍᴀʟʟ ᴄᴀᴘs — Kapitälchen</option>
+            </select>
+            <div class="font-preview" id="font-preview">𝔓𝔯𝔢𝔳𝔦𝔢𝔴</div>
+        </div>
+
         <!-- Mode Selection -->
         <div class="mode-section">
             <div class="mode-option">
                 <input type="radio" name="mode" id="mode-all" value="all">
                 <label class="mode-label" for="mode-all">
-                    <div class="mode-name">𝔄𝔩𝔩𝔢𝔰</div>
-                    <div class="mode-desc">Ganzer Text wird Fraktur</div>
+                    <div class="mode-name">Alles</div>
+                    <div class="mode-desc">Ganzer Text</div>
                 </label>
             </div>
             <div class="mode-option">
@@ -362,7 +426,7 @@
             </div>
         </div>
 
-        <!-- Random Slider (hidden by default) -->
+        <!-- Random Slider -->
         <div class="slider-section" id="slider-section">
             <div class="slider-header">
                 <span class="slider-label">Wie viele Wörter?</span>
@@ -376,7 +440,7 @@
         </div>
 
         <div class="button-row">
-            <button class="btn-primary" onclick="fracturify()">✨ Verschönern</button>
+            <button class="btn-primary" onclick="transform()">✨ Verschönern</button>
             <button class="btn-secondary" onclick="clearAll()">Löschen</button>
         </div>
 
@@ -397,25 +461,75 @@
     </footer>
 
     <script>
-        // Fraktur Unicode mappings
-        const frakturMap = {
-            'A': '𝔄', 'B': '𝔅', 'C': 'ℭ', 'D': '𝔇', 'E': '𝔈', 'F': '𝔉', 'G': '𝔊',
-            'H': 'ℌ', 'I': 'ℑ', 'J': '𝔍', 'K': '𝔎', 'L': '𝔏', 'M': '𝔐', 'N': '𝔑',
-            'O': '𝔒', 'P': '𝔓', 'Q': '𝔔', 'R': 'ℜ', 'S': '𝔖', 'T': '𝔗', 'U': '𝔘',
-            'V': '𝔙', 'W': '𝔚', 'X': '𝔛', 'Y': '𝔜', 'Z': 'ℨ',
-            'a': '𝔞', 'b': '𝔟', 'c': '𝔠', 'd': '𝔡', 'e': '𝔢', 'f': '𝔣', 'g': '𝔤',
-            'h': '𝔥', 'i': '𝔦', 'j': '𝔧', 'k': '𝔨', 'l': '𝔩', 'm': '𝔪', 'n': '𝔫',
-            'o': '𝔬', 'p': '𝔭', 'q': '𝔮', 'r': '𝔯', 's': '𝔰', 't': '𝔱', 'u': '𝔲',
-            'v': '𝔳', 'w': '𝔴', 'x': '𝔵', 'y': '𝔶', 'z': '𝔷'
+        // Unicode character maps for each font style
+        const fontMaps = {
+            fraktur: {
+                upper: '𝔄𝔅ℭ𝔇𝔈𝔉𝔊ℌℑ𝔍𝔎𝔏𝔐𝔑𝔒𝔓𝔔ℜ𝔖𝔗𝔘𝔙𝔚𝔛𝔜ℨ',
+                lower: '𝔞𝔟𝔠𝔡𝔢𝔣𝔤𝔥𝔦𝔧𝔨𝔩𝔪𝔫𝔬𝔭𝔮𝔯𝔰𝔱𝔲𝔳𝔴𝔵𝔶𝔷'
+            },
+            bold: {
+                upper: '𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙',
+                lower: '𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳'
+            },
+            italic: {
+                upper: '𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽𝐾𝐿𝑀𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍',
+                lower: '𝑎𝑏𝑐𝑑𝑒𝑓𝑔ℎ𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧'
+            },
+            boldItalic: {
+                upper: '𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁',
+                lower: '𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛'
+            },
+            script: {
+                upper: '𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ𝒩𝒪𝒫𝒬ℛ𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵',
+                lower: '𝒶𝒷𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏'
+            },
+            boldScript: {
+                upper: '𝓐𝓑𝓒𝓓𝓔𝓕𝓖𝓗𝓘𝓙𝓚𝓛𝓜𝓝𝓞𝓟𝓠𝓡𝓢𝓣𝓤𝓥𝓦𝓧𝓨𝓩',
+                lower: '𝓪𝓫𝓬𝓭𝓮𝓯𝓰𝓱𝓲𝓳𝓴𝓵𝓶𝓷𝓸𝓹𝓺𝓻𝓼𝓽𝓾𝓿𝔀𝔁𝔂𝔃'
+            },
+            doubleStruck: {
+                upper: '𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ',
+                lower: '𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫'
+            },
+            monospace: {
+                upper: '𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉',
+                lower: '𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝚟𝚠𝚡𝚢𝚣'
+            },
+            circled: {
+                upper: 'ⒶⒷⒸⒹⒺⒻⒼⒽⒾⒿⓀⓁⓂⓃⓄⓅⓆⓇⓈⓉⓊⓋⓌⓍⓎⓏ',
+                lower: 'ⓐⓑⓒⓓⓔⓕⓖⓗⓘⓙⓚⓛⓜⓝⓞⓟⓠⓡⓢⓣⓤⓥⓦⓧⓨⓩ'
+            },
+            squared: {
+                upper: '🄰🄱🄲🄳🄴🄵🄶🄷🄸🄹🄺🄻🄼🄽🄾🄿🅀🅁🅂🅃🅄🅅🅆🅇🅈🅉',
+                lower: '🄰🄱🄲🄳🄴🄵🄶🄷🄸🄹🄺🄻🄼🄽🄾🄿🅀🅁🅂🅃🅄🅅🅆🅇🅈🅉'
+            },
+            squaredNeg: {
+                upper: '🅰🅱🅲🅳🅴🅵🅶🅷🅸🅹🅺🅻🅼🅽🅾🅿🆀🆁🆂🆃🆄🆅🆆🆇🆈🆉',
+                lower: '🅰🅱🅲🅳🅴🅵🅶🅷🅸🅹🅺🅻🅼🅽🅾🅿🆀🆁🆂🆃🆄🆅🆆🆇🆈🆉'
+            },
+            smallCaps: {
+                upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                lower: 'ᴀʙᴄᴅᴇғɢʜɪᴊᴋʟᴍɴᴏᴘǫʀsᴛᴜᴠᴡxʏᴢ'
+            }
         };
 
-        // Reverse mapping for toggle functionality
-        const reverseFrakturMap = {};
-        for (const [latin, fraktur] of Object.entries(frakturMap)) {
-            reverseFrakturMap[fraktur] = latin;
-        }
+        // Preview texts for each font
+        const previewTexts = {
+            fraktur: '𝔓𝔯𝔢𝔳𝔦𝔢𝔴',
+            bold: '𝐏𝐫𝐞𝐯𝐢𝐞𝐰',
+            italic: '𝑃𝑟𝑒𝑣𝑖𝑒𝑤',
+            boldItalic: '𝑷𝒓𝒆𝒗𝒊𝒆𝒘',
+            script: '𝒫𝓇ℯ𝓋𝒾ℯ𝓌',
+            boldScript: '𝓟𝓻𝓮𝓿𝓲𝓮𝔀',
+            doubleStruck: 'ℙ𝕣𝕖𝕧𝕚𝕖𝕨',
+            monospace: '𝙿𝚛𝚎𝚟𝚒𝚎𝚠',
+            circled: 'Ⓟⓡⓔⓥⓘⓔⓦ',
+            squared: '🄿🅁🄴🅅🄸🄴🅆',
+            squaredNeg: '🅿🆁🅴🆅🅸🅴🆆',
+            smallCaps: 'ᴘʀᴇᴠɪᴇᴡ'
+        };
 
-        // Emotionale Kernwörter
+        // Emotional words for highlights mode
         const emotionalWords = [
             'liebe', 'seele', 'herz', 'kraft', 'traum', 'träume', 'hoffnung', 'glaube',
             'mut', 'stolz', 'ehre', 'treue', 'freiheit', 'schicksal', 'ewigkeit',
@@ -430,7 +544,7 @@
             'schwert', 'schild', 'krone', 'thron', 'könig', 'königin', 'krieger',
             'held', 'heldin', 'ritter', 'drache', 'wolf', 'löwe', 'adler', 'rabe',
             'phönix', 'einsamkeit', 'stille', 'echo', 'ewige', 'ewig', 'unendlich',
-            'verschränkung', 'symbiose', 'transformation',
+            'verschränkung', 'symbiose', 'transformation', 'revolution', 'alita',
             'love', 'soul', 'heart', 'power', 'dream', 'dreams', 'hope', 'faith',
             'courage', 'pride', 'honor', 'loyalty', 'freedom', 'destiny', 'eternity',
             'beauty', 'truth', 'wisdom', 'strength', 'passion', 'darkness', 'light',
@@ -446,22 +560,65 @@
             'dark', 'sacred', 'ancient', 'forsaken', 'broken', 'fallen', 'rising'
         ];
 
-        // Helper functions
-        function toFraktur(text) {
-            return text.split('').map(char => frakturMap[char] || char).join('');
+        // Build reverse maps for each font (for toggle functionality)
+        const reverseMaps = {};
+        for (const [fontName, maps] of Object.entries(fontMaps)) {
+            reverseMaps[fontName] = {};
+            const upperChars = [...maps.upper];
+            const lowerChars = [...maps.lower];
+            for (let i = 0; i < 26; i++) {
+                reverseMaps[fontName][upperChars[i]] = String.fromCharCode(65 + i);
+                reverseMaps[fontName][lowerChars[i]] = String.fromCharCode(97 + i);
+            }
         }
 
-        function fromFraktur(text) {
-            return text.split('').map(char => reverseFrakturMap[char] || char).join('');
+        // Convert text to selected font
+        function toFont(text, fontName) {
+            const map = fontMaps[fontName];
+            if (!map) return text;
+            
+            const upperChars = [...map.upper];
+            const lowerChars = [...map.lower];
+            
+            return text.split('').map(char => {
+                const code = char.charCodeAt(0);
+                if (code >= 65 && code <= 90) {
+                    return upperChars[code - 65];
+                } else if (code >= 97 && code <= 122) {
+                    return lowerChars[code - 97];
+                }
+                return char;
+            }).join('');
         }
 
-        function isFraktur(text) {
-            return text.split('').some(char => reverseFrakturMap[char]);
+        // Convert styled text back to normal
+        function fromFont(text, fontName) {
+            const reverse = reverseMaps[fontName];
+            if (!reverse) return text;
+            
+            return [...text].map(char => reverse[char] || char).join('');
+        }
+
+        // Check if text contains styled characters
+        function isStyled(text, fontName) {
+            const reverse = reverseMaps[fontName];
+            if (!reverse) return false;
+            return [...text].some(char => reverse[char]);
+        }
+
+        // Get current selections
+        function getSelectedFont() {
+            return document.getElementById('font-select').value;
         }
 
         function getSelectedMode() {
             return document.querySelector('input[name="mode"]:checked').value;
         }
+
+        // Update font preview
+        document.getElementById('font-select').addEventListener('change', (e) => {
+            document.getElementById('font-preview').textContent = previewTexts[e.target.value];
+        });
 
         // Show/hide slider based on mode
         document.querySelectorAll('input[name="mode"]').forEach(radio => {
@@ -478,12 +635,13 @@
             document.getElementById('slider-percent').textContent = e.target.value;
         });
 
-        // Main fracturify function
-        function fracturify() {
+        // Main transform function
+        function transform() {
             const input = document.getElementById('input').value;
             if (!input.trim()) return;
 
             const mode = getSelectedMode();
+            const font = getSelectedFont();
             const output = document.getElementById('output');
             const container = document.getElementById('output-container');
 
@@ -491,7 +649,7 @@
 
             switch (mode) {
                 case 'all':
-                    result = toFraktur(input);
+                    result = toFont(input, font);
                     output.textContent = result;
                     break;
 
@@ -499,32 +657,30 @@
                     const pattern = new RegExp(
                         '\\b(' + emotionalWords.join('|') + ')\\b', 'gi'
                     );
-                    result = input.replace(pattern, match => toFraktur(match));
+                    result = input.replace(pattern, match => toFont(match, font));
                     output.textContent = result;
                     break;
 
                 case 'random':
                     const percent = parseInt(document.getElementById('random-slider').value) / 100;
                     result = input.replace(/\b\w+\b/g, (word) => {
-                        return Math.random() < percent ? toFraktur(word) : word;
+                        return Math.random() < percent ? toFont(word, font) : word;
                     });
                     output.textContent = result;
                     break;
 
                 case 'select':
-                    // Create clickable words
                     output.innerHTML = '';
-                    const words = input.split(/(\s+)/); // Keep whitespace
-                    words.forEach((segment, index) => {
+                    const words = input.split(/(\s+)/);
+                    words.forEach((segment) => {
                         if (/^\s+$/.test(segment)) {
-                            // Whitespace - preserve it
                             output.appendChild(document.createTextNode(segment));
                         } else if (segment) {
-                            // Word - make it clickable
                             const span = document.createElement('span');
                             span.className = 'word';
                             span.textContent = segment;
                             span.dataset.original = segment;
+                            span.dataset.font = font;
                             span.addEventListener('click', toggleWord);
                             output.appendChild(span);
                         }
@@ -535,17 +691,18 @@
             container.classList.add('has-content');
         }
 
-        // Toggle word between normal and Fraktur
+        // Toggle word between normal and styled
         function toggleWord(e) {
             const span = e.target;
+            const font = span.dataset.font;
             const current = span.textContent;
             
-            if (isFraktur(current)) {
-                span.textContent = fromFraktur(current);
-                span.classList.remove('fraktur');
+            if (isStyled(current, font)) {
+                span.textContent = fromFont(current, font);
+                span.classList.remove('styled');
             } else {
-                span.textContent = toFraktur(current);
-                span.classList.add('fraktur');
+                span.textContent = toFont(current, font);
+                span.classList.add('styled');
             }
         }
 
@@ -555,7 +712,6 @@
             
             let text;
             if (mode === 'select') {
-                // Get text from spans
                 text = Array.from(output.childNodes)
                     .map(node => node.textContent)
                     .join('');
@@ -587,7 +743,7 @@
         document.getElementById('input').addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && e.ctrlKey) {
                 e.preventDefault();
-                fracturify();
+                transform();
             }
         });
     </script>
